@@ -1,0 +1,198 @@
+#include <graphics.h>
+#include <conio.h>
+#include <stdio.h>
+#include <dos.h>
+
+int gd=0,gm,end=0,end2=0,i=0;
+int ballX=305,ballY=325,lineX=280,lineX2=330;
+int chance=5,score=0;
+int stop=0,stop2=0,stop3=0,stop4=0,stop5=0,stop6=0;
+int leftUpMove=0,rightUpMove=0,upLeftMove=0,downLeftMove=0;
+int lefDownMove=0,rightDownMove=0,upRightMove=0,downRightMove=0;
+
+void drawGameBody()
+{
+  cleardevice();
+  setcolor(8);
+  settextstyle(0,0,2);
+ outtextxy(180,10, (char*)"BOUNCING BALL GAME");
+  settextstyle(3,0,2);
+  outtextxy(15,160,(char*)"Press");
+  outtextxy(25,180,(char*)"Esc");
+  outtextxy(10,200,(char*)"to Exit");
+outtextxy(565,140,(char*)"SCORE");
+  char str[10];
+  sprintf(str,"%d",score);
+  outtextxy(585,170,str);
+  outtextxy(560,200,(char*)"CHANCE");
+  sprintf(str,"%d",chance);
+  outtextxy(595,230,str);
+  setcolor(6);
+  setlinestyle(0,0,3);
+  rectangle(90,30,550,380);
+  setcolor(5);
+  line(lineX,350,lineX2,350);
+  setcolor(5);
+  circle(ballX,ballY,15);
+}
+
+void moveBall()
+{
+  if(chance<1)
+  {
+    return;
+  }
+  if(rightUpMove==0&&stop==0)
+  {
+    ballX+=5;
+    ballY-=5;
+    if(ballX==530)
+    {
+      score+=5;
+      stop=1;
+      stop2=0;
+      upLeftMove=1;
+      rightUpMove=1;
+    }
+  }else if(upLeftMove==1&&stop2==0)
+  {
+    ballX-=5;
+    ballY-=5;
+    if(ballY==50)
+    {
+      score+=5;
+      stop2=1;
+      stop3=0;
+      downLeftMove=1;
+      upLeftMove=0;
+    }
+  }else if(downLeftMove==1&&stop3==0)
+  {
+    ballX-=5;
+    ballY+=5;
+    if(ballX==110)
+    {
+      score+=5;
+      stop3=1;
+      stop4=0;
+      downRightMove=1;
+      downLeftMove=0;
+    }else if((ballX>=lineX&&ballX<=lineX2)&&ballY==330)
+    {
+      stop3=1;
+      stop5=0;
+     leftUpMove=1;
+      downLeftMove=0;
+    }else if(ballY==360)
+    {
+      chance--;
+      lineX=280,lineX2=330;
+      ballX=305,ballY=325;
+      stop=0,stop2=0,stop3=0,stop4=0,stop5=0,stop6=0;
+      leftUpMove=0,rightUpMove=0,upLeftMove=0,downLeftMove=0;
+     lefDownMove=0,rightDownMove=0,upRightMove=0,downRightMove=0;
+    }
+  }else if(downRightMove==1&&stop4==0)
+  {
+    ballX+=5;
+    ballY+=5;
+    if(ballY==360)
+    {
+      chance--;
+      lineX=280,lineX2=330;
+      ballX=305,ballY=325;
+      stop=0,stop2=0,stop3=0,stop4=0,stop5=0,stop6=0;
+      leftUpMove=0,rightUpMove=0,upLeftMove=0,downLeftMove=0;
+      lefDownMove=0,rightDownMove=0,upRightMove=0,downRightMove=0;
+    }else if((ballX>=lineX&&ballX<=lineX2)&&ballY==330)
+    {
+      stop4=1;
+      stop=0;
+      rightUpMove=0;
+      downRightMove=0;
+    }else if(ballX==530)
+    {
+      score+=5;
+      stop4=1;
+      stop3=0;
+      downLeftMove=1;
+      downRightMove=0;
+    }
+  }else if(leftUpMove==1&&stop5==0)
+  {
+    ballX-=5;
+    ballY-=5;
+    if(ballX==110)
+    {
+      score+=5;
+      stop5=1;
+      stop6=0;
+      upRightMove=1;
+      leftUpMove=0;
+    }else if(ballY==50)
+    {
+      score+=5;
+      stop5=1;
+      stop3=0;
+      downLeftMove=1;
+      leftUpMove=0;
+    }
+  }else if(upRightMove==1&&stop6==0)
+  {
+    ballX+=5;
+    ballY-=5;
+    if(ballY==50)
+    {
+      score+=5;
+      stop6=1;stop4=0;
+      downRightMove=1;
+      upRightMove=0;
+    }
+  }
+}
+
+void moveLine()
+{
+  char ch;
+  if(kbhit())
+  {
+    ch=getch();
+    switch(ch)
+    {
+    case 27:
+      end=1;
+      break;
+    case 75:
+      if(lineX>90)
+      {
+	lineX-=10;
+	lineX2-=10;
+      }
+      break;
+    case 77:
+      if(lineX2<550)
+      {
+	lineX+=10;
+	lineX2+=10;
+      }
+      break;
+    }
+  }
+}
+
+int main()
+{
+  initgraph(&gd,&gm,(char*)"");
+  while(1)
+  {
+    drawGameBody();
+    moveBall();
+    moveLine();
+    delay(80);
+    if(end==1)
+    {
+      break;
+    }
+  }
+  closegraph();
+}
